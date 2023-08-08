@@ -36,9 +36,9 @@ class XboxController(object):
 
 
     def read(self): # return the buttons/triggers that you care about in this methode
-        x=self.LeftJoystickX
-        y=self.LeftJoystickY
-        r=self.RightJoystickX
+        x = self.LeftJoystickX
+        y = self.LeftJoystickY
+        r = self.RightJoystickX
         a = self.A
         b = self.X # b=1, x=2
         rb = self.RightBumper
@@ -94,24 +94,9 @@ controller = XboxController()
 serialPort = Serial("/dev/ttyACM0", 115200)
 def sender():
         toSend = controller.read()
-        x=toSend[0]
-        y=toSend[1]
-        r=toSend[2]
-        if(abs(x)>0.1):
-            x = x*255
-        else:
-            x=0
-        if(abs(y)>0.1):
-            y = y*255
-        else:
-            y=0
-        if(abs(r)>0.1):
-            r = r*255
-        else:
-            r=0
-        msg = f'x{x}y{-y}r{r}'
-        serialPort.write(bytes(msg,"UTF-8"))
-        print(bytes(msg,"UTF-8"))
+        msg = f"x{toSend[0]}y{-toSend[1]}r{toSend[2]}"
+        serialPort.write(msg)
+        
 while 0==0 and True:
     
     sender()
