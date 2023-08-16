@@ -26,6 +26,11 @@ int rear_left = 0;
 int front_right = 0;
 int rear_right = 0;
 
+float volt = 0;
+long timeer = 0;
+long oldMills = 0;
+int ledState = 0;
+
 #define FORWARD 255
 #define REVERSE -255
 #define NEUTRAL 0
@@ -37,7 +42,8 @@ CytronMD BackLeft(PWM_DIR, blPWM, blDIR);
 
 void setup() {
   Serial.begin(115200);  
-
+  pinMode(26, INPUT);
+  pinMode(25, OUTPUT);
 }
 
 int maximum (int motor) {
@@ -56,6 +62,8 @@ void debug(){
   Serial.print(maximum(rear_left));
   Serial.print("\t");
   Serial.println(maximum(rear_right));
+  Serial.println(volt);
+  Serial.println(ledState);
 }
 void loop() {
   if (Serial.available() > 1) {
@@ -76,6 +84,21 @@ void loop() {
 int drive =  joyY - NEUTRAL;
 int strafe = joyX - NEUTRAL;
 int rotate = joyR - NEUTRAL;
+
+volt = analogRead(26);
+
+timeer = map(volt, 750, 1024, 1, 1500);
+
+if(millis()-oldMills > timeer){
+    if (ledState == 0){
+      ledState=1;
+    }
+    else{
+      ledState=0;
+    }
+    digitalWrite(25, ledState);
+    oldMills = millis();
+}
 
 front_left = drive + strafe + rotate;
 rear_left = drive - strafe + rotate ;
